@@ -7,6 +7,7 @@ import * as accuweather from "./accuweather.ts"
 import { QLocation } from "./location.ts"
 import { Weather } from "./models/weather.ts"
 import { FormatWithTimezoneLite } from "./accuweather.ts"
+import { getAPIURLBase } from "./qweather.ts"
 
 let client: Deno.HttpClient | undefined
 
@@ -20,6 +21,7 @@ const flags = parseArgs(Deno.args, {
     "proxy",
     "mode",
     "saveurl",
+    "apihost",
   ],
   default: {
     free: true,
@@ -32,6 +34,10 @@ const flags = parseArgs(Deno.args, {
 if (!flags.private || !flags.key || !flags.project) {
   console.error("Missing required flags")
   Deno.exit(1)
+}
+let apihost = flags.apihost
+if (!apihost) {
+  apihost = getAPIURLBase(flags.free)
 }
 
 const mode = flags.mode.split(",")
@@ -91,7 +97,7 @@ let needWait = false
 if (flags.qweather && qLocations.length > 0) {
   if (mode.includes("all") || mode.includes("qwdaily") || mode.includes("alldaily")) {
     console.log("get all daily weather...")
-    const saveData1 = await qweather.getAllDailyWeather(qLocations, token, flags.free)
+    const saveData1 = await qweather.getAllDailyWeather(qLocations, token, flags.free, client, apihost)
     console.log("get all daily weather...Done")
     needWait = true
     for (const location in saveData1) {
@@ -114,7 +120,7 @@ if (flags.qweather && qLocations.length > 0) {
       needWait = false
     }
     console.log("get all now weather...")
-    const saveData1 = await qweather.getAllNowWeather(qLocations, token, flags.free)
+    const saveData1 = await qweather.getAllNowWeather(qLocations, token, flags.free, client, apihost)
     console.log("get all now weather...Done")
     needWait = true
     for (const location in saveData1) {
@@ -142,7 +148,7 @@ if (flags.qweather && qLocations.length > 0) {
       qLocations2.push(...qLocations.filter(location => !AccuLocations.includes(QLocation[location] || location)))
     }
     console.log("get all hourly weather...")
-    const saveData1 = await qweather.getAllHourlyWeather(qLocations2, token, flags.free)
+    const saveData1 = await qweather.getAllHourlyWeather(qLocations2, token, flags.free, client, apihost)
     console.log("get all hourly weather...Done")
     needWait = true
     // 合并数据

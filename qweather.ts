@@ -3,7 +3,8 @@ import { Weather } from "./models/weather.ts"
 import { QLocation } from "./location.ts"
 import { ResultWeatherDaily, ResultWeatherHourly, ResultWeatherNow } from "./models/qweather.ts"
 
-export const getAPIURL = (free: boolean) => free ? "https://devapi.qweather.com" : "https://api.qweather.com"
+export const getAPIURL = (free: boolean) => `https://${getAPIURLBase(free)}`
+export const getAPIURLBase = (free: boolean) => free ? "devapi.qweather.com" : "api.qweather.com"
 
 export const generateToken = async (YourPrivateKey: string, YourKeyID: string, YourProjectID: string) => {
   const privateKey = await importPKCS8(YourPrivateKey, "EdDSA")
@@ -25,12 +26,16 @@ export const generateToken = async (YourPrivateKey: string, YourKeyID: string, Y
   return token
 }
 
-export const getUrl = (urlPath: string, free: boolean = true) => {
+export const getUrl = (apihost: string, urlPath: string) => {
+  return `https://${apihost}${urlPath}`
+}
+
+export const getUrlOld = (urlPath: string, free: boolean = true) => {
   return `${getAPIURL(free)}${urlPath}`
 }
 
-export const getRequest = async (urlPath: string, token: string, free: boolean = true, client?: Deno.HttpClient) => {
-  const url = getUrl(urlPath, free)
+export const getRequest = async (urlPath: string, token: string, free: boolean = true, client?: Deno.HttpClient, apihost?: string) => {
+  const url = apihost ? getUrl(apihost, urlPath) : getUrlOld(urlPath, free)
   const headers = {
     Authorization: `Bearer ${token}`
   }
@@ -56,8 +61,8 @@ export const getRequest = async (urlPath: string, token: string, free: boolean =
   return result
 }
 
-export const getDailyWeather = async (location: string, token: string, free: boolean = true, client?: Deno.HttpClient) => {
-  const result = await getRequest(`/v7/weather/7d?${new URLSearchParams({ location, lang: "zh-hans" }).toString()}`, token, free, client)
+export const getDailyWeather = async (location: string, token: string, free: boolean = true, client?: Deno.HttpClient, apihost?: string) => {
+  const result = await getRequest(`/v7/weather/7d?${new URLSearchParams({ location, lang: "zh-hans" }).toString()}`, token, free, client, apihost)
   if (!result) {
     console.error("Failed to fetch weather data")
     return undefined
@@ -77,8 +82,8 @@ export const getDailyWeather = async (location: string, token: string, free: boo
   }
   return weather
 }
-export const getHourlyWeather = async (location: string, token: string, free: boolean = true, client?: Deno.HttpClient) => {
-  const result = await getRequest(`/v7/weather/24h?${new URLSearchParams({ location, lang: "zh-hans" }).toString()}`, token, free, client)
+export const getHourlyWeather = async (location: string, token: string, free: boolean = true, client?: Deno.HttpClient, apihost?: string) => {
+  const result = await getRequest(`/v7/weather/24h?${new URLSearchParams({ location, lang: "zh-hans" }).toString()}`, token, free, client, apihost)
   if (!result) {
     console.error("Failed to fetch weather data")
     return undefined
@@ -98,8 +103,8 @@ export const getHourlyWeather = async (location: string, token: string, free: bo
   }
   return weather
 }
-export const getNowWeather = async (location: string, token: string, free: boolean = true, client?: Deno.HttpClient) => {
-  const result = await getRequest(`/v7/weather/now?${new URLSearchParams({ location, lang: "zh-hans" }).toString()}`, token, free, client)
+export const getNowWeather = async (location: string, token: string, free: boolean = true, client?: Deno.HttpClient, apihost?: string) => {
+  const result = await getRequest(`/v7/weather/now?${new URLSearchParams({ location, lang: "zh-hans" }).toString()}`, token, free, client, apihost)
   if (!result) {
     console.error("Failed to fetch weather data")
     return undefined
@@ -121,36 +126,36 @@ export const getNowWeather = async (location: string, token: string, free: boole
   return weather
 }
 
-export const getAllDailyWeather = async (locations: string[], token: string, free: boolean = true, client?: Deno.HttpClient) => {
+export const getAllDailyWeather = async (locations: string[], token: string, free: boolean = true, client?: Deno.HttpClient, apihost?: string) => {
   const saveData: Record<string, Weather> = {}
 
   for (const location of locations) {
     if (!location) continue
-    const daysWeather = await getDailyWeather(location, token, free, client)
+    const daysWeather = await getDailyWeather(location, token, free, client, apihost)
     if (!daysWeather) continue
     saveData[QLocation[location] || location] = daysWeather
   }
   return saveData
 }
 
-export const getAllHourlyWeather = async (locations: string[], token: string, free: boolean = true, client?: Deno.HttpClient) => {
+export const getAllHourlyWeather = async (locations: string[], token: string, free: boolean = true, client?: Deno.HttpClient, apihost?: string) => {
   const saveData: Record<string, Weather> = {}
 
   for (const location of locations) {
     if (!location) continue
-    const hourlysWeather = await getHourlyWeather(location, token, free, client)
+    const hourlysWeather = await getHourlyWeather(location, token, free, client, apihost)
     if (!hourlysWeather) continue
     saveData[QLocation[location] || location] = hourlysWeather
   }
   return saveData
 }
 
-export const getAllNowWeather = async (locations: string[], token: string, free: boolean = true, client?: Deno.HttpClient) => {
+export const getAllNowWeather = async (locations: string[], token: string, free: boolean = true, client?: Deno.HttpClient, apihost?: string) => {
   const saveData: Record<string, Weather> = {}
 
   for (const location of locations) {
     if (!location) continue
-    const nowWeather = await getNowWeather(location, token, free, client)
+    const nowWeather = await getNowWeather(location, token, free, client, apihost)
     if (!nowWeather) continue
     saveData[QLocation[location] || location] = nowWeather
   }
