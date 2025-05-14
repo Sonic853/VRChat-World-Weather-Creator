@@ -6,7 +6,7 @@
 - [和风天气](https://www.qweather.com/)
 - [AccuWeather](https://www.accuweather.com/)
 
-- ## License restrictions 许可限制
+## License restrictions 许可限制
 详见[在线版](https://github.com/Sonic853/vpm-repos/wiki/License-restrictions-%E8%AE%B8%E5%8F%AF%E9%99%90%E5%88%B6)
 
 中国大陆地区（中国香港、中国澳门和中国台湾除外）的个人或公司如含有以下任一情况禁止使用该仓库许可以及商品许可并禁止使用此储存库以及商品（包括此储存库以及商品的任一文件）：
