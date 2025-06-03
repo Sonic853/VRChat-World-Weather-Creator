@@ -231,6 +231,18 @@ if (await fs.exists(filepath2)) {
 }
 await Deno.writeTextFile(filepath2, JSON.stringify(newSaveData))
 
+const vketData: Record<string, Record<string, Weather>> = {
+  "Shanghai": {
+    "Shanghai": saveData["Shanghai|Shanghai"]
+  }
+}
+
+const filepath3 = path.join(folder, `${flags.export}vket.json`)
+if (await fs.exists(filepath3)) {
+  await Deno.remove(filepath3)
+}
+await Deno.writeTextFile(filepath3, JSON.stringify(vketData))
+
 // 保活
 const timeNow = new Date()
 const thisDay = timeNow.getDate()
