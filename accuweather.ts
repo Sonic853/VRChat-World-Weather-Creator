@@ -55,12 +55,14 @@ export const getRequest = async (urlPath: string, client?: Deno.HttpClient) => {
   const headers = {
     "accept-encoding": "gzip, deflate, br, zstd",
     "accept-language": "zh-CN,zh;q=0.9,zh-TW;q=0.8,en;q=0.7,ja;q=0.6",
-    "sec-ch-ua": "\"Microsoft Edge\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"",
+    "priority": "u=0, i",
+    "sec-ch-ua": "\"Not:A-Brand\";v=\"99\", \"Microsoft Edge\";v=\"145\", \"Chromium\";v=\"145\"",
     "sec-ch-ua-mobile": "?0",
     "sec-ch-ua-platform": "\"Windows\"",
     // cookie: 'awx_user=tp:C|lang:zh-cn',
     cookie: 'awx_user=tp:C',
     Referer: "https://www.accuweather.com/",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0",
   }
   let res: Response
   if (client) {
