@@ -31,7 +31,7 @@ const flags = parseArgs(Deno.args, {
     mode: "all",
   },
 })
-if (!flags.private || !flags.key || !flags.project) {
+if (qweather && !flags.private || !flags.key || !flags.project) {
   console.error("Missing required flags")
   Deno.exit(1)
 }
@@ -51,7 +51,7 @@ if (flags.proxy) {
 }
 
 // Base64 解码
-const privateKey = atob(flags.private)
+const privateKey = atob(flags.private!)
 // 从 location/QLocation 中获取所有的 location 并筛选出有效的 location
 const qLocations: string[] = []
 if (await fs.exists(path.join(".", "location", "QLocation"))) {
@@ -71,7 +71,10 @@ if (await fs.exists(path.join(".", "location", "AccuLocation"))) {
   )
 }
 
-const token = await qweather.generateToken(privateKey, flags.key, flags.project)
+let token = ""
+if (flags.qweather) {
+  token = await qweather.generateToken(privateKey, flags.key, flags.project)
+}
 
 const saveData: Record<string, Weather> = {}
 if (flags.saveurl) {

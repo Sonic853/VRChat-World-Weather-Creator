@@ -282,7 +282,7 @@ export const getHourlyWeatherHtml = (htmltext: string) => {
       pop,
     })
   })
-  const todayElement = document(".cur-con-weather-card__body > .cur-con-weather-card__panel > .forecast-container > .forecast-container")
+  const todayElement = document(".cur-con-weather-card__body > .cur-con-weather-card__panel > .forecast-container")
   const icon = todayElement.find(".weather-icon").attr("data-src")?.split("/").pop()?.split(".")[0]
   const temp = todayElement.find(".temp-container > .temp").text().trim().split("°")[0]
   const realFeel = todayElement.find(".temp-container > .real-feel").text().replaceAll("RealFeel®", "").trim().split("°")[0]
