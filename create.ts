@@ -78,8 +78,12 @@ if (flags.qweather) {
 
 const saveData: Record<string, Weather> = {}
 if (flags.saveurl) {
-  let saveDataOld: Record<string, Weather>
-  if (flags.saveurl !== "test") {
+  let saveDataOld: Record<string, Weather> = {}
+  const localJsonFile = path.join(".", "pages", `${flags.export}.json`)
+  if (await fs.exists(localJsonFile)) {
+    saveDataOld = JSON.parse(await Deno.readTextFile(localJsonFile))
+  }
+  if (Object.keys(saveDataOld).length === 0 && flags.saveurl !== "test") {
     // 从 saveurl 中下载数据
     try {
       const url = `${flags.saveurl}${flags.export}.json`
@@ -88,9 +92,6 @@ if (flags.saveurl) {
       console.error(`Failed to fetch data: ${error}`)
       saveDataOld = {}
     }
-  }
-  else {
-    saveDataOld = JSON.parse(await Deno.readTextFile(path.join(".", "pages", `${flags.export}.json`)))
   }
   for (const location in saveDataOld) {
     saveData[location] = saveDataOld[location]
