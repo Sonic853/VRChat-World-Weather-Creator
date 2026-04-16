@@ -170,7 +170,7 @@ if (flags.qweather && qLocations.length > 0) {
 }
 
 if (flags.accuweather && AccuLocations.length > 0) {
-  if (mode.includes("all") || mode.includes("accuwhourly") || mode.includes("accuwdaily") || mode.includes("allhourly") || mode.includes("alldaily")) {
+  if (mode.includes("all") || mode.includes("accuwhourly") || mode.includes("accuwdaily") || mode.includes("accuwnow") || mode.includes("allhourly") || mode.includes("alldaily") || mode.includes("allnow")) {
     for (const location of AccuLocations) {
       if (!location) continue
       const daysWeather = await accuweather.getWeather(location, client)
