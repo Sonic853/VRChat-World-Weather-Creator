@@ -3576,6 +3576,8 @@ export const QLocation: Record<string, string> = {
   "F35CF": "Taiwan, Province of China|Beigang Township",
   "F4F1": "Taiwan, Province of China|Yanpu Township",
   "F69B": "Taiwan, Province of China|Xinwu District",
+  "Yunlin County": "Taiwan, Province of China|Yunlin County",
+  "Penghu County": "Taiwan, Province of China|Penghu County",
 }
 export const AccuLocation: Record<string, string> = {
   "101010100": "/zh/cn/beijing/101924/weather-forecast/101924",
